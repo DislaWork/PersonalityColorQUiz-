@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Personality Quiz for Kids</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; }
+    .question-box { max-width: 600px; margin: auto; }
+    .option { display: block; margin: 10px 0; }
+    #result { display: none; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Color Personality Quiz 🌈</h1>
+  <div class="question-box">
+    <p id="question"></p>
+    <div id="options"></div>
+  </div>
+
+  <div id="result">
+    <h2>Your Color is: <span id="color-name"></span></h2>
+    <p id="description"></p>
+    <h3>Career Ideas:</h3>
+    <ul id="careers"></ul>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        q: "What do you like to do during recess?",
+        options: ["Lead games with others", "Read or do puzzles", "Try new games or make up fun stories", "Help a friend or invite someone to join in"]
+      },
+      {
+        q: "When your team plays a game, you usually:",
+        options: ["Take charge and make decisions", "Think of a plan or strategy", "Make it fun with jokes or wild moves", "Encourage others and make sure no one feels left out"]
+      },
+      {
+        q: "What’s your favorite kind of homework?",
+        options: ["Projects where I get to be in charge", "Research and facts", "Creative writing or drawing", "Helping a classmate understand"]
+      },
+      {
+        q: "Your dream vacation would be:",
+        options: ["Exploring a famous city and learning history", "Visiting a science museum or library", "Going to a theme park or jungle adventure", "Volunteering at an animal shelter or helping the community"]
+      },
+      {
+        q: "Your friends say you're really good at:",
+        options: ["Taking the lead", "Solving problems", "Making them laugh", "Caring and listening"]
+      },
+      {
+        q: "You get excited when:",
+        options: ["There’s a competition to win", "You figure out something tricky", "You get to try something new", "You can make someone’s day better"]
+      },
+      {
+        q: "How do you react when things don’t go as planned?",
+        options: ["Try to take control and fix it", "Stay calm and look for answers", "Laugh it off and try something else", "Make sure everyone is okay first"]
+      },
+      {
+        q: "Your ideal group project is one where:",
+        options: ["You can lead and assign roles", "You research and organize ideas", "You come up with creative ideas", "Everyone works together and feels included"]
+      },
+      {
+        q: "At a party, you’re usually:",
+        options: ["Organizing games or setting the rules", "Hanging out with a small group", "Dancing and making jokes", "Checking if everyone is having fun"]
+      },
+      {
+        q: "What kind of stories do you like?",
+        options: ["Stories about heroes or leaders", "Mysteries or science fiction", "Funny or magical adventures", "Stories about friendship and kindness"]
+      },
+      {
+        q: "Your favorite subject in school is:",
+        options: ["Social Studies", "Math or Science", "Art or Drama", "Health or Language Arts"]
+      },
+      {
+        q: "You feel proud when:",
+        options: ["You lead your team to success", "You figure something out no one else could", "You make people laugh or smile", "You help someone in need"]
+      },
+      {
+        q: "On the weekend, you'd rather:",
+        options: ["Play sports or compete in a game", "Build something or do experiments", "Put on a play or create something new", "Volunteer or take care of pets"]
+      },
+      {
+        q: "The most important thing to me is…",
+        options: ["Winning", "Being organized and not making mistakes", "Having friends", "That everyone is happy"]
+      },
+      {
+        q: "You are happiest when:",
+        options: ["You’re winning or achieving a goal", "You’re learning something new", "You’re exploring or creating", "You’re helping someone else"]
+      }
+    ];
+
+    const personalities = {
+      A: {
+        name: "Red – The Leader",
+        description: "You're confident, determined, and love taking the lead! You enjoy making decisions, organizing your group, and keeping things moving. People look up to you because you’re strong-minded and like to get things done.",
+        careers: ["Entrepreneur", "Lawyer", "Team Coach", "CEO", "Police Officer"]
+      },
+      B: {
+        name: "Blue – The Thinker",
+        description: "You are thoughtful, calm, and curious. You love solving puzzles, thinking deeply, and understanding how things work. You prefer quiet, focused tasks.",
+        careers: ["Scientist", "Engineer", "Author", "Architect", "Programmer"]
+      },
+      C: {
+        name: "Yellow – The Explorer",
+        description: "You're full of energy, creativity, and curiosity. You love trying new things, making people laugh, and coming up with big ideas.",
+        careers: ["Actor", "Artist", "Inventor", "Game Developer", "Adventure Guide"]
+      },
+      D: {
+        name: "Green – The Helper",
+        description: "You are kind, friendly, and always think of others. You’re the one your friends go to when they need support.",
+        careers: ["Teacher", "Nurse", "Counselor", "Social Worker", "Veterinarian"]
+      }
+    };
+
+    const answers = [];
+    let current = 0;
+
+    function showQuestion() {
+      if (current < questions.length) {
+        const q = questions[current];
+        document.getElementById("question").innerText = `${current + 1}. ${q.q}`;
+        const opts = ["A", "B", "C", "D"];
+        const optionsDiv = document.getElementById("options");
+        optionsDiv.innerHTML = "";
+        q.options.forEach((text, index) => {
+          const btn = document.createElement("button");
+          btn.className = "option";
+          btn.innerText = `${opts[index]}. ${text}`;
+          btn.onclick = () => selectOption(opts[index]);
+          optionsDiv.appendChild(btn);
+        });
+      } else {
+        showResults();
+      }
+    }
+
+    function selectOption(option) {
+      answers.push(option);
+      current++;
+      showQuestion();
+    }
+
+    function showResults() {
+      document.querySelector(".question-box").style.display = "none";
+      document.getElementById("result").style.display = "block";
+
+      const count = { A: 0, B: 0, C: 0, D: 0 };
+      answers.forEach(a => count[a]++);
+      const top = Object.keys(count).reduce((a, b) => count[a] > count[b] ? a : b);
+
+      const profile = personalities[top];
+      document.getElementById("color-name").innerText = profile.name;
+      document.getElementById("description").innerText = profile.description;
+      const careers = document.getElementById("careers");
+      careers.innerHTML = "";
+      profile.careers.forEach(c => {
+        const li = document.createElement("li");
+        li.innerText = c;
+        careers.appendChild(li);
+      });
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
